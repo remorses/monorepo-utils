@@ -8,6 +8,8 @@ import { PackageManagerPlugin } from "./manager/PackageManagerPlugin";
 export type Options = {
     rootDir: string;
     checkOnly: boolean;
+    removeComments?: boolean;
+    indentation?: number;
     plugins?: PackageManagerPlugin[];
     tsConfigPathFinder?(location: string): string;
 };
@@ -88,9 +90,16 @@ export const toProjectReferences = (options: Options) => {
             return;
         } else {
             // update
+            const indentation = options.indentation ?? 2;
             if (errors.length === 0) {
                 tsconfigJSON["references"] = newProjectReferences;
-                fs.writeFileSync(tsconfigFilePath, commentJSON.stringify(tsconfigJSON, null, 2), "utf-8");
+                fs.writeFileSync(
+                    tsconfigFilePath,
+                    options.removeComments
+                        ? JSON.stringify(tsconfigJSON, null, indentation)
+                        : commentJSON.stringify(tsconfigJSON, null, indentation),
+                    "utf-8"
+                );
             }
         }
     });

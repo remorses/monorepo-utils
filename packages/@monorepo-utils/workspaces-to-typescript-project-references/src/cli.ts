@@ -21,6 +21,10 @@ export const cli = meow(
       --tsconfigPath     [Path:string] Use alternative config path inside the package. e.g.: tsconfig.test.json
                          Default: tsconfig.json
 
+      --removeComments   If set the flag, removes comments from tsconfig.json.
+
+      --indentation      tsconfig.json indentation number, defaults to 2
+
     Examples
       # Update project references in tsconfig.json
       $ workspaces-to-typescript-project-references
@@ -36,6 +40,14 @@ export const cli = meow(
             check: {
                 type: "boolean",
                 default: false
+            },
+            removeComments: {
+                type: "boolean",
+                default: false
+            },
+            indentation: {
+                type: "number",
+                default: 2
             },
             plugin: {
                 type: "string",
@@ -71,6 +83,8 @@ export const run = async (
         rootDir: flags.root,
         checkOnly: flags.check,
         plugins,
+        removeComments: flags.removeComments,
+        indentation: flags.indentation,
         tsConfigPathFinder: flags.tsconfigPath ? customTsConfigFinder : undefined
     });
     if (result.ok) {
